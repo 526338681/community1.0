@@ -5,7 +5,7 @@ import com.fan.community.entity.User;
 import com.fan.community.util.CommunityConstant;
 import com.fan.community.util.CommunityUtil;
 import com.fan.community.util.MailClient;
-import com.sun.tools.corba.se.idl.PragmaEntry;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
