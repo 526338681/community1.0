@@ -44,7 +44,7 @@ public class UserController {
     private HostHolder hostHolder;
 
     @LoginRequired
-    @RequestMapping(path = "//setting", method = RequestMethod.GET)
+    @RequestMapping(path = "/setting", method = RequestMethod.GET)
     public String getSettingPage() {
         return "/site/setting";
     }

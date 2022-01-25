@@ -134,7 +134,7 @@ public class LoginController implements CommunityConstant {
 
     // 忘记密码页面
     @RequestMapping(path = "/forget", method = RequestMethod.GET)
-    public String getForgetPage() {
+    public String getForgetPage(){
         return "/site/forget";
     }
 
