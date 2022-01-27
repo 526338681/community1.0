@@ -12,4 +12,6 @@ public interface DiscussPostMapper {
     List<DiscussPost> selectDiscussPost(int userId,int offset,int limit);
     //如果方法只有一个参数，并且在if里使用必须加别名
     int selectDiscussPostRows(@Param("userId") int userId);
+
+    int insertDiscussPost(DiscussPost discussPost);
 }
