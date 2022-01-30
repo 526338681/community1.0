@@ -23,7 +23,7 @@ public class CommentController {
 
     @RequestMapping(path = "/add/{discussPostId}", method = RequestMethod.POST)
     public String addComment(@PathVariable("discussPostId") int discussPostId, Comment comment) {
-        //有可能用户没有登录，需要做廷议的处理
+        //有可能用户没有登录，需要做统一的处理
         comment.setUserId(hostHolder.getUser().getId());
         comment.setStatus(0);
         comment.setCreateTime(new Date());
