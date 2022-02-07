@@ -19,7 +19,7 @@ public class ExceptionAdvice {
 
     @ExceptionHandler({Exception.class})
     public void handleException(Exception e, HttpServletResponse response, HttpServletRequest request) throws IOException {
-        LOGGER.error("服务器发生异常" + e.getMessage());
+        LOGGER.error("!!服务器发生异常!!" + e.getMessage());
         for (StackTraceElement element : e.getStackTrace()) {
             LOGGER.error(element.toString());
         }
@@ -29,7 +29,7 @@ public class ExceptionAdvice {
         if ("XMLHttpRequest".equals(xRequestedWith)) {
             response.setContentType("appllication/plain;charset=utf-8");
             PrintWriter writer = response.getWriter();
-            writer.write(CommunityUtil.getJSONString(1, "服务器异常"));
+            writer.write(CommunityUtil.getJSONString(1, "服务器异常了，哈哈"));
         } else {
             response.sendRedirect(request.getContextPath() + "/error");
         }
