@@ -2,6 +2,7 @@ package com.fan.community.controller;
 
 import com.fan.community.annotation.LoginRequired;
 import com.fan.community.entity.User;
+import com.fan.community.service.LikeService;
 import com.fan.community.service.UserService;
 import com.fan.community.util.CommunityUtil;
 import com.fan.community.util.HostHolder;
@@ -37,11 +38,15 @@ public class UserController {
 
     @Value("${server.servlet.context-path}")
     private String contextPath;
+
     @Autowired
     private UserService userService;
 
     @Autowired
     private HostHolder hostHolder;
+
+    @Autowired
+    private LikeService likeService;
 
     @LoginRequired
     @RequestMapping(path = "/setting", method = RequestMethod.GET)
@@ -91,16 +96,16 @@ public class UserController {
         String suffix = fileName.substring(fileName.lastIndexOf("."));
         //响应图片
         response.setContentType("image/" + suffix);
-        try(
+        try (
                 //JDK7：相当于写在finally
                 //需要最后关闭
                 OutputStream os = response.getOutputStream();
                 FileInputStream fis = new FileInputStream(fileName);
-                ) {
+        ) {
             byte[] buffer = new byte[1024];
             int b = 0;
             while ((b = fis.read(buffer)) != -1) {
-                os.write(buffer,0,b);
+                os.write(buffer, 0, b);
             }
         } catch (IOException e) {
             logger.error("读取头像失败" + e.getMessage());
@@ -119,5 +124,23 @@ public class UserController {
             model.addAttribute("newPasswordMsg", map.get("newPasswordMsg"));
             return "/site/setting";
         }
+    }
+
+    //个人主页
+    @RequestMapping(path = "profile/{userId}", method = RequestMethod.GET)
+    public String getProfilePage(@PathVariable("userId") int userId, Model model) {
+        User user = userService.findUserById(userId);
+        if (user == null) {
+            throw new RuntimeException("该用户不存在");
+        }
+
+        //用户
+        model.addAttribute("user", user);
+
+        //点赞数量
+        int userLikeCount = likeService.findUserLikeCount(userId);
+        model.addAttribute("userLikeCount", userLikeCount);
+
+        return "/site/profile";
     }
 }

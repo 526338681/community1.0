@@ -20,7 +20,7 @@ public interface CommunityConstant {
     /**
      * 勾选rememberme
      */
-    int REMEMBER_EXPIRED_SECONDS = 3600 * 24 * 30;
+    int REMEMBER_EXPIRED_SECONDS = 3600 * 12 * 10;
     /**
      * 实体类型：帖子
      */
