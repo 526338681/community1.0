@@ -1,7 +1,9 @@
 package com.fan.community.controller;
 
+import com.fan.community.entity.Event;
 import com.fan.community.entity.Page;
 import com.fan.community.entity.User;
+import com.fan.community.event.EventProducer;
 import com.fan.community.service.FollowService;
 import com.fan.community.service.UserService;
 import com.fan.community.util.CommunityConstant;
@@ -30,6 +32,9 @@ public class FollowController implements CommunityConstant {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private EventProducer eventProducer;
+
     //关注
     @RequestMapping(path = "/follow", method = RequestMethod.POST)
     @ResponseBody
@@ -39,6 +44,15 @@ public class FollowController implements CommunityConstant {
             return CommunityUtil.getJSONString(403, "你还没有登录");
         }
         followService.follow(user.getId(), entityType, entityId);
+
+        //触发关注事件
+        Event event = new Event()
+                .setTopic(TOPIC_FOLLOW)
+                .setEntityType(entityType)
+                .setUserId(hostHolder.getUser().getId())
+                .setEntityId(entityId)
+                .setEntityUserId(entityId);
+        eventProducer.fireEvent(event);
 
         return CommunityUtil.getJSONString(0, "已关注");
     }
