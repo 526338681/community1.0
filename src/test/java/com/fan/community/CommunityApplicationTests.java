@@ -1,6 +1,7 @@
 package com.fan.community;
 
-import org.junit.jupiter.api.Test;
+
+import org.junit.Test;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
