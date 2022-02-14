@@ -9,6 +9,12 @@ public class RedisKeyUtil {
     private static final String PREFIX_KAPTCHA = "kaptcha";
     private static final String PREFIX_TICKET = "ticket";
     private static final String PREFIX_USER = "user";
+    private static final String PREFIX_TOP = "top";
+
+    //某个实体是否置顶
+    public static String getTopKey(int entityType, int entityId) {
+        return PREFIX_TOP + SPLIT + entityType + SPLIT + entityId;
+    }
 
     //某个实体的赞
     //like:entity:entityType:entityId -> set(userId)

@@ -2,8 +2,10 @@ package com.fan.community.service;
 
 import com.fan.community.dao.DiscussPostMapper;
 import com.fan.community.entity.DiscussPost;
+import com.fan.community.util.RedisKeyUtil;
 import com.fan.community.util.SensitiveFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
 
@@ -16,6 +18,9 @@ public class DiscussPostService {
 
     @Autowired
     private SensitiveFilter sensitiveFilter;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     public List<DiscussPost> findDiscussPost(int userId,int offset,int limit){
         return discussPostMapper.selectDiscussPost(userId,offset,limit);
@@ -46,5 +51,21 @@ public class DiscussPostService {
     //更新帖子的数量
     public int updateCommentCount(int id, int commentCount) {
         return discussPostMapper.updateCommentCount(id, commentCount);
+    }
+
+    //置顶
+    public int updateType(int id, int type) {
+        return discussPostMapper.updateType(id, type);
+    }
+
+    //加精
+    public int updateStatus(int id, int status) {
+        return discussPostMapper.updateStatus(id, status);
+    }
+
+    //查询当前帖子是否置顶
+    public boolean hasTop(int entityType, int entityId) {
+        String topKey = RedisKeyUtil.getTopKey(entityType, entityId);
+        return redisTemplate.opsForZSet().score(topKey, entityId) != null;
     }
 }
