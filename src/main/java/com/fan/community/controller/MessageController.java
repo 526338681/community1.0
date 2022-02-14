@@ -83,6 +83,7 @@ public class MessageController implements CommunityConstant {
             for (Message message : letterList) {
                 Map<String, Object> map = new HashMap<>();
                 map.put("letter", message);
+
                 map.put("fromUser", userService.findUserById(message.getFromId()));
                 letters.add(map);
             }
@@ -259,5 +260,13 @@ public class MessageController implements CommunityConstant {
             messageService.readMessage(ids);
         }
         return "/site/notice-detail";
+    }
+
+    // 删除私信
+    @RequestMapping(path = "/letter/delete", method = RequestMethod.POST)
+    @ResponseBody
+    public String deleteLetter(int id) {
+        messageService.deleteMessage(id);
+        return CommunityUtil.getJSONString(0);
     }
 }
