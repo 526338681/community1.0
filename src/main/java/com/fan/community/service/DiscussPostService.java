@@ -22,8 +22,8 @@ public class DiscussPostService {
     @Autowired
     private RedisTemplate redisTemplate;
 
-    public List<DiscussPost> findDiscussPost(int userId,int offset,int limit){
-        return discussPostMapper.selectDiscussPost(userId,offset,limit);
+    public List<DiscussPost> findDiscussPost(int userId,int offset,int limit,int orderMode){
+        return discussPostMapper.selectDiscussPost(userId,offset,limit,orderMode);
     }
     public int findDiscussPostRows(int userId){
         return discussPostMapper.selectDiscussPostRows(userId);
@@ -63,9 +63,14 @@ public class DiscussPostService {
         return discussPostMapper.updateStatus(id, status);
     }
 
-    //查询当前帖子是否置顶
-    public boolean hasTop(int entityType, int entityId) {
-        String topKey = RedisKeyUtil.getTopKey(entityType, entityId);
-        return redisTemplate.opsForZSet().score(topKey, entityId) != null;
+    //更新帖子分数
+    public int updateScore(int id, double score) {
+        return discussPostMapper.updateScore(id, score);
     }
+
+    //查询当前帖子是否置顶
+//    public boolean hasTop(int entityType, int entityId) {
+//        String topKey = RedisKeyUtil.getTopKey(entityType, entityId);
+//        return redisTemplate.opsForZSet().score(topKey, entityId) != null;
+//    }
 }

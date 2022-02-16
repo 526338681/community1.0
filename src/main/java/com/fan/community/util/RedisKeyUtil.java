@@ -9,14 +9,15 @@ public class RedisKeyUtil {
     private static final String PREFIX_KAPTCHA = "kaptcha";
     private static final String PREFIX_TICKET = "ticket";
     private static final String PREFIX_USER = "user";
-    private static final String PREFIX_TOP = "top";
+//    private static final String PREFIX_TOP = "top";
     private static final String PREFIX_UV = "uv";
     private static final String PREFIX_DAU = "dau";
+    private static final String PREFIX_POST = "post";
 
     //某个实体是否置顶
-    public static String getTopKey(int entityType, int entityId) {
-        return PREFIX_TOP + SPLIT + entityType + SPLIT + entityId;
-    }
+//    public static String getTopKey(int entityType, int entityId) {
+//        return PREFIX_TOP + SPLIT + entityType + SPLIT + entityId;
+//    }
 
     //某个实体的赞
     //like:entity:entityType:entityId -> set(userId)
@@ -76,5 +77,10 @@ public class RedisKeyUtil {
     //区间活跃用户
     public static String getDAUKey(String startDate, String endDate) {
         return PREFIX_DAU + SPLIT + startDate + SPLIT + endDate;
+    }
+
+    //热帖
+    public static String getPostScoreKey() {
+        return PREFIX_POST + SPLIT + "score";
     }
 }

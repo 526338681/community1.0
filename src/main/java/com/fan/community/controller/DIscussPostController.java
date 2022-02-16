@@ -9,7 +9,9 @@ import com.fan.community.service.UserService;
 import com.fan.community.util.CommunityConstant;
 import com.fan.community.util.CommunityUtil;
 import com.fan.community.util.HostHolder;
+import com.fan.community.util.RedisKeyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +39,9 @@ public class DIscussPostController implements CommunityConstant {
     @Autowired
     private EventProducer eventProducer;
 
+    @Autowired
+    private RedisTemplate redisTemplate;
+
     @RequestMapping(path = "add", method = RequestMethod.POST)
     @ResponseBody
     public String addDiscussPost(String title, String content) {
@@ -58,6 +63,10 @@ public class DIscussPostController implements CommunityConstant {
                 .setEntityType(ENTITY_TYPE_POST)
                 .setEntityId(post.getId());
         eventProducer.fireEvent(event);
+
+        //计算帖子分数
+        String redisKey = RedisKeyUtil.getPostScoreKey();
+        redisTemplate.opsForSet().add(redisKey, post.getId());
 
         //报错情况统一处理
         return CommunityUtil.getJSONString(0, "发布帖子成功！");
@@ -139,11 +148,11 @@ public class DIscussPostController implements CommunityConstant {
             }
         }
 
-        boolean hasTop = false;
-        if (hostHolder.getUser() != null) {
-            hasTop = discussPostService.hasTop(ENTITY_TYPE_POST,discussPostId);
-        }
-        model.addAttribute("hasTop", hasTop);
+//        boolean hasTop = false;
+//        if (hostHolder.getUser() != null) {
+//            hasTop = discussPostService.hasTop(ENTITY_TYPE_POST,discussPostId);
+//        }
+//        model.addAttribute("hasTop", hasTop);
 
         model.addAttribute("comments", commentVoList);
         return "/site/discuss-detail";
@@ -169,20 +178,20 @@ public class DIscussPostController implements CommunityConstant {
     }
 
     //取消置顶
-    @RequestMapping(path = "/untop", method = RequestMethod.POST)
-    @ResponseBody
-    public String setNuTop(int id) {
-        discussPostService.updateType(id, 0);
-        //触发发帖事件
-        Event event = new Event()
-                .setTopic(TOPIC_PUBLISH)
-                .setUserId(hostHolder.getUser().getId())
-                .setEntityType(ENTITY_TYPE_POST)
-                .setEntityId(id);
-        eventProducer.fireEvent(event);
-
-        return CommunityUtil.getJSONString(0);
-    }
+//    @RequestMapping(path = "/untop", method = RequestMethod.POST)
+//    @ResponseBody
+//    public String setNuTop(int id) {
+//        discussPostService.updateType(id, 0);
+//        //触发发帖事件
+//        Event event = new Event()
+//                .setTopic(TOPIC_PUBLISH)
+//                .setUserId(hostHolder.getUser().getId())
+//                .setEntityType(ENTITY_TYPE_POST)
+//                .setEntityId(id);
+//        eventProducer.fireEvent(event);
+//
+//        return CommunityUtil.getJSONString(0);
+//    }
 
     //加精
     @RequestMapping(path = "/wonderful", method = RequestMethod.POST)
@@ -197,6 +206,10 @@ public class DIscussPostController implements CommunityConstant {
                 .setEntityType(ENTITY_TYPE_POST)
                 .setEntityId(id);
         eventProducer.fireEvent(event);
+
+        //计算帖子分数
+        String redisKey = RedisKeyUtil.getPostScoreKey();
+        redisTemplate.opsForSet().add(redisKey, id);
 
         return CommunityUtil.getJSONString(0);
     }

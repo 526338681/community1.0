@@ -6,36 +6,50 @@ $(function(){
 
 // 置顶
 function setTop() {
-    var btn = this;
-    if ($(btn).hasClass("btn-info")) {
-        //置顶
-        $.post(
-            CONTEXT_PATH + "/discuss/top",
-            {"id": $("#postId").val()},
-            function (data) {
-                data = $.parseJSON(data);
-                if (data.code == 0) {
-                    $("#topBtn").attr("disabled", "disabled");
-                } else {
-                    alert(data.msg);
-                }
+    //置顶
+    $.post(
+        CONTEXT_PATH + "/discuss/top",
+        {"id": $("#postId").val()},
+        function (data) {
+            data = $.parseJSON(data);
+            if (data.code == 0) {
+                $("#topBtn").attr("disabled", "disabled");
+            } else {
+                alert(data.msg);
             }
-        );
-    } else {
-        //取消置顶
-        $.post(
-            CONTEXT_PATH + "/discuss/untop",
-            {"id": $("#postId").val()},
-            function (data) {
-                data = $.parseJSON(data);
-                if (data.code == 0) {
-                    $("#topBtn").attr("disabled", "disabled");
-                } else {
-                    alert(data.msg);
-                }
-            }
-        );
-    }
+        }
+    );
+
+    // var btn = this;
+    // if ($(btn).hasClass("btn-info")) {
+    //     //置顶
+    //     $.post(
+    //         CONTEXT_PATH + "/discuss/top",
+    //         {"id": $("#postId").val()},
+    //         function (data) {
+    //             data = $.parseJSON(data);
+    //             if (data.code == 0) {
+    //                 $("#topBtn").attr("disabled", "disabled");
+    //             } else {
+    //                 alert(data.msg);
+    //             }
+    //         }
+    //     );
+    // } else {
+    //     //取消置顶
+    //     $.post(
+    //         CONTEXT_PATH + "/discuss/untop",
+    //         {"id": $("#postId").val()},
+    //         function (data) {
+    //             data = $.parseJSON(data);
+    //             if (data.code == 0) {
+    //                 $("#topBtn").attr("disabled", "disabled");
+    //             } else {
+    //                 alert(data.msg);
+    //             }
+    //         }
+    //     );
+    // }
 
 }
 
