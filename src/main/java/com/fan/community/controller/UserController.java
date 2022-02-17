@@ -1,31 +1,28 @@
 package com.fan.community.controller;
 
+
+
 import com.fan.community.annotation.LoginRequired;
-import com.fan.community.entity.Comment;
-import com.fan.community.entity.DiscussPost;
-import com.fan.community.entity.Page;
-import com.fan.community.entity.User;
+
+import com.fan.community.entity.*;
 import com.fan.community.service.*;
+import com.fan.community.util.AliyunOSSUtil;
 import com.fan.community.util.CommunityConstant;
 import com.fan.community.util.CommunityUtil;
 import com.fan.community.util.HostHolder;
 import org.apache.commons.lang3.StringUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,12 +60,44 @@ public class UserController implements CommunityConstant {
     @Autowired
     private CommentService commentService;
 
+    @Autowired
+    private AliyunOSSUtil aliyunOSSUtil;
+
+    @LoginRequired
+    @RequestMapping(path = "/uploadFile")
+    public String uploadFile(@RequestParam("file") MultipartFile file) {
+        String fileName = file.getOriginalFilename();
+        System.out.println(fileName + "==filename");
+        try {
+            if (file != null) {
+                if (!"".equals(fileName.trim())) {
+                    File newFile = new File(fileName);
+                    FileOutputStream os = new FileOutputStream(newFile);
+                    os.write(file.getBytes());
+                    os.close();
+                    file.transferTo(newFile);
+                    // 上传到OSS
+                    String uploadUrl = aliyunOSSUtil.upLoad(newFile);
+                    System.out.println("uploadUrl===========" + uploadUrl);
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        User user = hostHolder.getUser();
+        String headerUrl = "https://fan-community2.oss-cn-beijing.aliyuncs.com/" + aliyunOSSUtil.fileUrl;
+        userService.updateHeader(user.getId(), headerUrl);
+        return "redirect:/index";
+    }
+
+
     @LoginRequired
     @RequestMapping(path = "/setting", method = RequestMethod.GET)
     public String getSettingPage() {
         return "/site/setting";
     }
 
+    //废弃
     @LoginRequired
     @RequestMapping(path = "/upload", method = RequestMethod.POST)
     public String uploadHeader(MultipartFile headerImage, Model model) {
@@ -102,6 +131,7 @@ public class UserController implements CommunityConstant {
         return "redirect:/index";
     }
 
+    //废弃
     //获取头像
     @RequestMapping(path = "/header/{fileName}", method = RequestMethod.GET)
     public void getHeader(@PathVariable("fileName") String fileName, HttpServletResponse response) {

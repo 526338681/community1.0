@@ -1,6 +1,6 @@
 package com.fan.community.service;
 
-import com.fan.community.dao.LoginTicketMapper;
+
 import com.fan.community.dao.UserMapper;
 import com.fan.community.entity.LoginTicket;
 import com.fan.community.entity.User;
@@ -218,6 +218,7 @@ public class UserService implements CommunityConstant {
         redisTemplate.delete(redisKey);
     }
 
+    //spring security登录验证
     public Collection<? extends GrantedAuthority> getAuthorities(int userId) {
         User user = this.findUserById(userId);
         List<GrantedAuthority> list = new ArrayList<>();
