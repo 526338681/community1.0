@@ -35,8 +35,8 @@ public class AliyunOSSUtil {
         String endpoint = "oss-cn-beijing.aliyuncs.com";
         System.out.println("获取到的Point为:" + endpoint);
 
-        String accessKeyId = "LTAI5t9tmi8GvgjjYimYQrsB";    //accessKeyId 、accessKeySecret 上面有说到哪里获取
-        String accessKeySecret = "c4IJNRwzjPh7JdCrKLJOhWH8bVMkSF";
+        String accessKeyId = "";    //accessKeyId 、accessKeySecret 上面有说到哪里获取
+        String accessKeySecret = "";
 
         String bucketName = "fan-community2";  //刚才新建的bucket名称
         String fileHost = "header";   //在刚才新建的bucket下面新建一个目录，这就是那个目录的名称
